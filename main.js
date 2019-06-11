@@ -1,52 +1,44 @@
 
-var board = document.getElementById("board");
+let board = document.getElementById("board");
 const b4 = document.getElementById("b4");
 const b6 = document.getElementById("b6");
 const b8 = document.getElementById("b8");
+const button = document.getElementsByClassName("button");
 const reset = document.getElementById("reset");
-
+let table = document.createElement("DIV");
+board.appendChild(table);
 let tileArray = [];
 let mult = 0;
-b4.addEventListener("click", function () {
-    mult = 2;
-    tileArray = buildTiles(4 * mult);
-    buildTable(4);
-    b4.disabled = true;
-    b6.disabled = true;
-    b8.disabled = true;
-    startGame();
-})
+for (let i = 0; i < button.length; i++) {
+    button[i].addEventListener("click", function () {
+        mult = this.innerHTML[0];
+        tileArray = buildTiles(mult * (mult / 2)).concat(buildTiles(mult * (mult / 2)));
+        console.log(tileArray);
+        buildTable(mult);
+        b4.disabled = true;
+        b6.disabled = true;
+        b8.disabled = true;
+        startGame();
+    });
 
-b6.addEventListener("click", function () {
-    mult = 3;
-    tileArray = buildTiles(6 * mult);
-    buildTable(6);
-    b4.disabled = true;
-    b6.disabled = true;
-    b8.disabled = true;
-})
-b8.addEventListener("click", function () {
-    mult = 4;
-    tileArray = buildTiles(8 * mult);
-    buildTable(8);
-    b4.disabled = true;
-    b6.disabled = true;
-    b8.disabled = true;
-})
+}
+
 reset.addEventListener("click", function () {
     document.location.reload();
 })
 
 function buildTable(size) {
-    var row = [];
-    var cntr = 0;
+
+    let row = [];
+    let cntr = 0;
     shuffleArray(tileArray);
-    for (var i = 0; i < size; i++) {
+    console.log(tileArray);
+    for (let i = 0; i < mult; i++) {
         row[i] = document.createElement("DIV");
         row[i].setAttribute("class", "row");
-        board.appendChild(row[i]);
-        var col = [];
-        for (var j = 0; j < size; j++) {
+        table.appendChild(row[i]);
+        let col = [];
+        for (let j = 0; j < mult; j++) {
             col[j] = document.createElement("DIV");
             col[j].innerHTML = "<p>" + tileArray[cntr] + "</p>";
             col[j].setAttribute("class", "col-sm");
@@ -55,42 +47,66 @@ function buildTable(size) {
             col[j].style.textAlign = "center";
             row[i].appendChild(col[j]);
             cntr++;
-            if (cntr >= size * mult) {
-                cntr = 0;
-                shuffleArray(tileArray);
-            }
         }
     }
 }
 
 function buildTiles(size) {
-    var tempArray = [];
-    for (var i = 0; i < size; i++) {
+    let tempArray = [];
+    for (let i = 0; i < size; i++) {
         tempArray[i] = Number(i + 1);
     }
     return tempArray;
 }
 
 function shuffleArray(array) {
-    for (var i = array.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var temp = array[i];
+    for (let i = array.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        let temp = array[i];
         array[i] = array[j];
         array[j] = temp;
     }
 }
-
+let hasFlipped = false;
+let firstCard, secondCard;
+let foundArray = [];
 function startGame() {
     let pressed = document.querySelectorAll(".col-sm");
-    for (var i = 0; i < pressed.length; i++) {
-        pressed[i].addEventListener("click", function(){
-        this.querySelector("p").style.opacity=1;
-        });
-        
+
+    for (let i = 0; i < pressed.length; i++) {
+        pressed[i].addEventListener("click", flip);
     }
 }
 
-/*pressed.addEventListener("click", function(){
-    console.log(this);
-    this.style.background = "red";
-})*/
+function flip() {
+
+    this.querySelector("p").style.opacity = 1;
+    if (hasFlipped == false) {
+        hasFlipped = true;
+        firstCard = this.querySelector("p");
+    }
+    else {
+        hasFlipped = false;
+        secondCard = this.querySelector("p");
+        if (firstCard.innerHTML != secondCard.innerHTML) {//no match
+            setTimeout(function () {
+                firstCard.style.opacity = 0;
+                secondCard.style.opacity = 0;
+            }, 1000);
+        }
+        else {
+            foundArray.push(firstCard.innerHTML);
+            if (foundArray.length >= mult * (mult / 2)) {
+                setTimeout(function () {
+                    board.removeChild(table);
+                    let win = document.createElement("DIV");
+                    win.setAttribute("class", ".text-center");
+                    win.innerHTML = "YOU WON!";
+                    board.appendChild(win);
+                }, 2000);
+
+            }
+        }
+
+    }
+}
