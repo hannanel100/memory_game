@@ -43,7 +43,8 @@ function buildTable(size) {
             col[j].innerHTML = "<p>" + tileArray[cntr] + "</p>";
             col[j].setAttribute("class", "col-sm");
             col[j].querySelector("p").style.opacity = 0;
-            col[j].style.border = "thick solid #0000FF";
+            col[j].style.border = "2px solid #007bff";
+            col
             col[j].style.textAlign = "center";
             row[i].appendChild(col[j]);
             cntr++;
@@ -71,6 +72,7 @@ let hasFlipped = false;
 let firstCard, secondCard;
 let foundArray = [];
 function startGame() {
+    setInterval(timer, 1000);
     let pressed = document.querySelectorAll(".col-sm");
 
     for (let i = 0; i < pressed.length; i++) {
@@ -103,10 +105,47 @@ function flip() {
                     win.setAttribute("class", ".text-center");
                     win.innerHTML = "YOU WON!";
                     board.appendChild(win);
-                }, 2000);
+                }, 1000);
 
             }
         }
 
     }
+}
+//still need to insert pictures
+
+//timer still need to clear timer every  time
+let bottom = document.getElementById("bottom");
+let sec = 0;
+let min = 0;
+function timer() {
+    let time;
+    let str = "";
+    time = document.createElement("DIV");
+    console.log(time);
+    if (min < 10) {
+        str = "0" + min + ":" + sec;
+        writeTimer(str, time);
+        sec++;
+    }
+    if (sec < 10) {
+        str = "0" + min + ":" + "0" + sec;
+        writeTimer(str, time);
+    }
+    else if (sec > 59) {
+        min++;
+        sec = 0;
+        str = "0" + min + ":" + "0" + sec;
+        writeTimer(str, time);
+    }
+    
+}
+function writeTimer(str, time) {
+    time.innerHTML = str;
+    time.style.border = "thick solid #007bff";
+    time.setAttribute("class", ".d-inline-block");
+    bottom.insertBefore(time, reset);
+    setTimeout(function(){
+        time.remove();
+    },999);
 }
