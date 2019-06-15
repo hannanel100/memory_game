@@ -13,7 +13,7 @@ for (let i = 0; i < button.length; i++) {
     button[i].addEventListener("click", function () {
         mult = this.innerHTML[0];
         tileArray = buildTiles(mult * (mult / 2)).concat(buildTiles(mult * (mult / 2)));
-        console.log(tileArray);
+        //console.log(tileArray);
         buildTable(mult);
         b4.disabled = true;
         b6.disabled = true;
@@ -32,21 +32,25 @@ function buildTable(size) {
     let row = [];
     let cntr = 0;
     shuffleArray(tileArray);
-    console.log(tileArray);
+    //console.log(tileArray);
     for (let i = 0; i < mult; i++) {
         row[i] = document.createElement("DIV");
         row[i].setAttribute("class", "row");
         table.appendChild(row[i]);
-        let col = [];
+        let colFront = [];
+        let colBack = [];
         for (let j = 0; j < mult; j++) {
-            col[j] = document.createElement("DIV");
-            col[j].innerHTML = "<p>" + tileArray[cntr] + "</p>";
-            col[j].setAttribute("class", "col-sm");
-            col[j].querySelector("p").style.opacity = 0;
-            col[j].style.border = "2px solid #007bff";
-            col
-            col[j].style.textAlign = "center";
-            row[i].appendChild(col[j]);
+            colFront[j] = document.createElement("img");
+            colFront[j].src ="front1.jpg";
+            colFront[j].setAttribute("class", "col-sm front");
+            colBack[j] = document.createElement("img");
+            colBack[j].src = "img/" + tileArray[cntr] + ".jpg";
+            colBack[j].setAttribute("class", "col-sm back");
+            //colBack[j].getElementsByClassName(".back").style.opacity = 0;
+            colBack[j].style.border = "2px solid #007bff";
+            colBack[j].style.textAlign = "center";
+            row[i].appendChild(colFront[j]);
+            row[i].appendChild(colBack[j]);
             cntr++;
         }
     }
@@ -55,7 +59,7 @@ function buildTable(size) {
 function buildTiles(size) {
     let tempArray = [];
     for (let i = 0; i < size; i++) {
-        tempArray[i] = Number(i + 1);
+        tempArray[i] = "p" + Number(i + 1);
     }
     return tempArray;
 }
@@ -73,7 +77,7 @@ let firstCard, secondCard;
 let foundArray = [];
 function startGame() {
     setInterval(timer, 1000);
-    let pressed = document.querySelectorAll(".col-sm");
+    let pressed = document.querySelectorAll(".img .back");
 
     for (let i = 0; i < pressed.length; i++) {
         pressed[i].addEventListener("click", flip);
@@ -82,14 +86,14 @@ function startGame() {
 
 function flip() {
 
-    this.querySelector("p").style.opacity = 1;
+    this.querySelector("img .back").style.opacity = 1;
     if (hasFlipped == false) {
         hasFlipped = true;
-        firstCard = this.querySelector("p");
+        firstCard = this.querySelector("img .back");
     }
     else {
         hasFlipped = false;
-        secondCard = this.querySelector("p");
+        secondCard = this.querySelector("img .back");
         if (firstCard.innerHTML != secondCard.innerHTML) {//no match
             setTimeout(function () {
                 firstCard.style.opacity = 0;
@@ -122,7 +126,7 @@ function timer() {
     let time;
     let str = "";
     time = document.createElement("DIV");
-    console.log(time);
+    //console.log(time);
     if (min < 10) {
         str = "0" + min + ":" + sec;
         writeTimer(str, time);

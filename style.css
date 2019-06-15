@@ -5,6 +5,8 @@
 }
 body{
     height: 100vh;
+    background: #FFC157;
+    
 }
 #board{
     width: 80%;
@@ -12,4 +14,16 @@ body{
     height: 70vh;
     margin: auto;
     margin-top: 25px;
+}
+
+.front, .back{
+    
+
+
+}
+.front{
+    opacity: 1;
+}
+.back{
+    opacity: 0;
 }
